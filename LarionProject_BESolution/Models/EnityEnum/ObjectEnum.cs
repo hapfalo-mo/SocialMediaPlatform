@@ -15,5 +15,11 @@ namespace Models.EnityEnum
             Private = 2, 
             FriendOnly = 3
         }
+
+        public enum FavoriteEnum
+        {
+            Inactive = 0,
+            Active = 1
+        }
     }
 }

@@ -52,6 +52,8 @@ namespace Services.Implementations
                 var result = _mapper.Map<PostResponseDTO>(postResponse);
                 result.TotalLike = await _context.Likes.CountAsync( l => l.PostId == postId);
                 result.TotalComment = await _context.Comments.CountAsync(c => c.ParrentId == postId);
+                result.FullName = user.FullName;
+                result.Avatar_Url = user.AvatarUrl;
                 return result;
             } catch(Exception ex)
             {

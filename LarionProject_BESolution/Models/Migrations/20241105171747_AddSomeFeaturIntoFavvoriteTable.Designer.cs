@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Models.Migrations
 {
     [DbContext(typeof(LarionDatabaseContext))]
-    partial class LarionDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241105171747_AddSomeFeaturIntoFavvoriteTable")]
+    partial class AddSomeFeaturIntoFavvoriteTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,11 +76,11 @@ namespace Models.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FavoriteId"));
 
-                    b.Property<DateTime?>("CreateAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("CreateAt")
+                        .HasColumnType("text");
 
-                    b.Property<int?>("CreateBy")
-                        .HasColumnType("integer");
+                    b.Property<string>("CreateBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("FavoriteName")
                         .IsRequired()
@@ -88,8 +91,8 @@ namespace Models.Migrations
                     b.Property<string>("ImgUrl")
                         .HasColumnType("text");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.HasKey("FavoriteId")
                         .HasName("favorites_pkey");
