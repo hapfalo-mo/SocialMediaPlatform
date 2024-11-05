@@ -28,12 +28,14 @@ public partial class LarionDatabaseContext : DbContext
 
     public virtual DbSet<UserFavorite> UserFavorites { get; set; }
 
+    public virtual DbSet<Likes> Likes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       /*  => optionsBuilder.UseNpgsql(GetConnetionString());*/
       => optionsBuilder.UseNpgsql("Host =localhost;Port=5432;Database=LarionDatabase;Username=postgres;Password= HJ10xugb123*");
 
     private string GetConnetionString()
-    {   
+    {
         var basePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
         var config = new ConfigurationBuilder()
             .SetBasePath(basePath)
@@ -185,6 +187,22 @@ public partial class LarionDatabaseContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserFavorites)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("user_favorites_user_id_fkey");
+        });
+
+        modelBuilder.Entity<Likes>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.PostId }).HasName("likes_pkey");
+            entity.ToTable("likes");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.PostId).HasColumnName("post_id");
+            entity.HasOne(d => d.UserNavigation).WithMany(p => p.Likes)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("likes_user_id_fkey")
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.PostNavigation).WithMany(p => p.Likes)
+                .HasForeignKey(d => d.PostId)
+                .HasConstraintName("likes_post_id_fkey")
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         OnModelCreatingPartial(modelBuilder);

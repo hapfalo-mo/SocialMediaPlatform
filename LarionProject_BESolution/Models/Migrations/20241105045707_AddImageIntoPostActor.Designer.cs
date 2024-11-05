@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Models.Migrations
 {
     [DbContext(typeof(LarionDatabaseContext))]
-    partial class LarionDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241105045707_AddImageIntoPostActor")]
+    partial class AddImageIntoPostActor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,24 +112,6 @@ namespace Models.Migrations
                     b.ToTable("follows", (string)null);
                 });
 
-            modelBuilder.Entity("Models.Likes", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("integer")
-                        .HasColumnName("post_id");
-
-                    b.HasKey("UserId", "PostId")
-                        .HasName("likes_pkey");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("likes", (string)null);
-                });
-
             modelBuilder.Entity("Models.Post", b =>
                 {
                     b.Property<int>("PostId")
@@ -149,9 +134,9 @@ namespace Models.Migrations
                     b.Property<string>("ImgURL")
                         .HasColumnType("text");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("integer")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("status");
 
                     b.Property<string>("Title")
@@ -184,9 +169,6 @@ namespace Models.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
                     b.Property<string>("AvatarUrl")
                         .HasMaxLength(2083)
                         .HasColumnType("character varying(2083)")
@@ -202,9 +184,6 @@ namespace Models.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("email");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("text");
 
                     b.Property<short>("Gentle")
                         .HasColumnType("smallint")
@@ -313,27 +292,6 @@ namespace Models.Migrations
                     b.Navigation("FollowingUser");
                 });
 
-            modelBuilder.Entity("Models.Likes", b =>
-                {
-                    b.HasOne("Models.Post", "PostNavigation")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("likes_post_id_fkey");
-
-                    b.HasOne("Models.User", "UserNavigation")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("likes_user_id_fkey");
-
-                    b.Navigation("PostNavigation");
-
-                    b.Navigation("UserNavigation");
-                });
-
             modelBuilder.Entity("Models.Post", b =>
                 {
                     b.HasOne("Models.User", "User")
@@ -377,11 +335,6 @@ namespace Models.Migrations
                     b.Navigation("UserFavorites");
                 });
 
-            modelBuilder.Entity("Models.Post", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("Models.User", b =>
                 {
                     b.Navigation("Comments");
@@ -389,8 +342,6 @@ namespace Models.Migrations
                     b.Navigation("FollowFollowedUsers");
 
                     b.Navigation("FollowFollowingUsers");
-
-                    b.Navigation("Likes");
 
                     b.Navigation("Posts");
 

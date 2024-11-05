@@ -13,11 +13,16 @@ public partial class Post
 
     public int UserId { get; set; }
 
-    public string? Status { get; set; }
+    public int Status { get; set; }
 
     public DateTime CreateAt { get; set; }
 
     public DateTime? UpdateAt { get; set; }
 
+    public string? ImgURL { get; set; }
+   
     public virtual User User { get; set; } = null!;
+    
+    public virtual ICollection<Likes> Likes { get; set; } = new List<Likes>();
+
 }

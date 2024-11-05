@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Services.Implementations
 {
@@ -27,6 +28,9 @@ namespace Services.Implementations
             try
             {
                 var user = _mapper.Map<User>(userDTO);
+                user.PasswordHash = hassPassWord(userDTO.password_hash);
+                user.PhoneNumber = userDTO.phone_number;
+                user.Status = 1; // Create New Account always Active
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
                 return user;
@@ -37,5 +41,32 @@ namespace Services.Implementations
             }
         }
 
+
+         /*---------Internal Site---------*/
+         // Hash Password
+         private String hassPassWord(string password)
+        {
+            using (var sha512 = SHA512.Create())
+            {
+                // Hash password
+                byte[] passwordbytes = Encoding.UTF8.GetBytes(password);
+                byte[] hashBytes = sha512.ComputeHash(passwordbytes);
+
+                StringBuilder builder = new StringBuilder();
+                foreach(byte b in hashBytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
+
+            }
+        }
+
+        // Verify password_hash 
+        private bool verifyPassword(string password, string passwordhash)
+        {
+            string hashPassword = hassPassWord(password);
+            return hashPassword.Equals(passwordhash, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

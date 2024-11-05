@@ -11,6 +11,10 @@ public partial class User
 
     public string PasswordHash { get; set; } = null!;
 
+    public string? FullName { get; set; } = null!;
+
+    public string? Address { get; set;} = null!;
+
     public string? Introduction { get; set; }
 
     public string? AvatarUrl { get; set; }
@@ -36,4 +40,6 @@ public partial class User
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 
     public virtual ICollection<UserFavorite> UserFavorites { get; set; } = new List<UserFavorite>();
+
+    public virtual ICollection<Likes> Likes { get; set; } = new List<Likes>();
 }

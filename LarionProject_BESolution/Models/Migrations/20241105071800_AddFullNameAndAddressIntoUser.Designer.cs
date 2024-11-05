@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Models.Migrations
 {
     [DbContext(typeof(LarionDatabaseContext))]
-    partial class LarionDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241105071800_AddFullNameAndAddressIntoUser")]
+    partial class AddFullNameAndAddressIntoUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,24 +110,6 @@ namespace Models.Migrations
                     b.HasIndex("FollowedUserId");
 
                     b.ToTable("follows", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Likes", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("integer")
-                        .HasColumnName("post_id");
-
-                    b.HasKey("UserId", "PostId")
-                        .HasName("likes_pkey");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("likes", (string)null);
                 });
 
             modelBuilder.Entity("Models.Post", b =>
@@ -313,27 +298,6 @@ namespace Models.Migrations
                     b.Navigation("FollowingUser");
                 });
 
-            modelBuilder.Entity("Models.Likes", b =>
-                {
-                    b.HasOne("Models.Post", "PostNavigation")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("likes_post_id_fkey");
-
-                    b.HasOne("Models.User", "UserNavigation")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("likes_user_id_fkey");
-
-                    b.Navigation("PostNavigation");
-
-                    b.Navigation("UserNavigation");
-                });
-
             modelBuilder.Entity("Models.Post", b =>
                 {
                     b.HasOne("Models.User", "User")
@@ -377,11 +341,6 @@ namespace Models.Migrations
                     b.Navigation("UserFavorites");
                 });
 
-            modelBuilder.Entity("Models.Post", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("Models.User", b =>
                 {
                     b.Navigation("Comments");
@@ -389,8 +348,6 @@ namespace Models.Migrations
                     b.Navigation("FollowFollowedUsers");
 
                     b.Navigation("FollowFollowingUsers");
-
-                    b.Navigation("Likes");
 
                     b.Navigation("Posts");
 

@@ -15,11 +15,12 @@ public partial class Comment
 
     public int? ParrentId { get; set; }
 
+    public bool Status { get; set; } = true;
+
     public virtual User CreateByNavigation { get; set; } = null!;
 
     public virtual ICollection<Comment> InverseParrent { get; set; } = new List<Comment>();
 
     public virtual Comment? Parrent { get; set; }
-
-    public bool Status { get; set; } = true;
+    
 }

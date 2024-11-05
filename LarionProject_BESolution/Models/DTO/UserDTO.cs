@@ -15,6 +15,5 @@ namespace Models.DTO
         public string email { get;set;}
         public string phone_number { get;set;}
         public int gentle { get; set; }
-
     }
 }
