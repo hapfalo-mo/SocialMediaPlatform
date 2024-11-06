@@ -29,5 +29,20 @@ namespace LarionProject_BE.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // Login Action 
+        [HttpPost("login")]
+        public async Task<IActionResult> loginUser(string username, string password)
+        {
+            try
+            {
+                var user = await _userService.loginUser(username, password);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
