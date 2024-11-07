@@ -34,6 +34,10 @@ namespace Services.Implementations
             try
             {
                 var user = _mapper.Map<User>(userDTO);
+                if (userDTO.password_hash != userDTO.re_password_hash)
+                {
+                    throw new Exception("Mật khẩu không trùng khớp");
+                }
                 user.PasswordHash = hassPassWord(userDTO.password_hash);
                 user.PhoneNumber = userDTO.phone_number;
                 user.Status = 1;

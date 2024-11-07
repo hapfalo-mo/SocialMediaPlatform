@@ -21,6 +21,15 @@ builder.Services.AddScoped<IFollowActionService, FollowActionService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddAutoMapper(typeof(GenerateProfile));
 builder.Services.AddScoped<ILikeActionService, LikeActionService>();
+builder.Services.AddCors(OptionsBuilderConfigurationExtensions =>
+{
+    OptionsBuilderConfigurationExtensions.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,7 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
