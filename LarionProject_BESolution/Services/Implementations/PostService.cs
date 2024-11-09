@@ -41,7 +41,6 @@ namespace Services.Implementations
                 return new ObjectResult("An error occurred: " + ex.Message) { StatusCode = 500 };
             }
         }
-
         // Get Post Result 
         public async Task<ActionResult<PostResponseDTO>> GetPostByPostID (int postId)
         {
@@ -60,5 +59,30 @@ namespace Services.Implementations
                 throw new Exception("An error occurred: " + ex.Message);
             }
         }
+
+        // Get All Posts
+        public async Task<ActionResult<IEnumerable<PostResponseDTO>>> GetAllPosts()
+        {
+            try
+            {
+                var posts = await _context.Posts.ToListAsync();
+                var result = new List<PostResponseDTO>();
+                foreach (var post in posts)
+                {
+                    var user = _context.Users.FirstOrDefault(u => u.UserId == post.UserId);
+                    var postResponse = _mapper.Map<PostResponseDTO>(post);
+                    postResponse.TotalLike = await _context.Likes.CountAsync(l => l.PostId == post.PostId);
+                    postResponse.TotalComment = await _context.Comments.CountAsync(c => c.ParrentId == post.PostId);
+                    postResponse.FullName = user.FullName;
+                    postResponse.Avatar_Url = user.AvatarUrl;
+                    result.Add(postResponse);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred: " + ex.Message);
+            }
+        }   
     }
 }

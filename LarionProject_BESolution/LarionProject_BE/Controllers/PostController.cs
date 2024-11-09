@@ -47,5 +47,17 @@ namespace LarionProject_BE.Controllers
             return Ok(new {PostResponseDTO = result });
         }
 
+        /// <summary>
+        ///  Get All  Post
+        /// </summary>
+        /// <param name="postDTO"></param>
+        /// <returns></returns>
+        [HttpGet("get-all-post")]
+        public async Task<ActionResult<IEnumerable<PostResponseDTO>>> GetAllPosts()
+        {
+            var result = await _postService.GetAllPosts();
+            return Ok(new { PostResponseDTO = result });
+        }
+
     }
 }
