@@ -16,6 +16,7 @@ namespace Models.Mapping
             CreateMap<UserDTO, User>();
             CreateMap<PostCreateDTO, Post>();
             CreateMap<Post, PostResponseDTO>();
+            CreateMap<User,UserValidDTO>();
         }
     }
 }

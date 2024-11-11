@@ -10,6 +10,8 @@ namespace Models.DTO
     {
         public string accessToken { get;set;}
         public int userId { get;set; }
-        public short role { get; set; }
+        public short role { get; set; } 
+        public string AvatarUrl { get; set; }
+        public string Username { get;set; }
     }
 }

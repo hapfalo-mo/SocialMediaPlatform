@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.DTO;
 using Services.Interfaces;
 
@@ -37,6 +38,36 @@ namespace LarionProject_BE.Controllers
             try
             {
                 var user = await _userService.loginUser(username, password);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Get All User 
+        [HttpGet("get-all-user/{userid}")]
+        public async Task<ActionResult<IEnumerable<UserValidDTO>>> getAllUser(int userid)
+        {
+            try
+            {
+                var users = await _userService.getAllUser(userid);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Get User By User Id
+        [HttpGet("get-user-by-id/{userId}")]
+        public async Task<ActionResult<User>> getUserByUserId(int userId)
+        {
+            try
+            {
+                var user = await _userService.getUserByUserId(userId);
                 return Ok(user);
             }
             catch (Exception ex)

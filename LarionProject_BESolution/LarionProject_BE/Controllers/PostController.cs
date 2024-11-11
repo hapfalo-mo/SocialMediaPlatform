@@ -59,5 +59,23 @@ namespace LarionProject_BE.Controllers
             return Ok(new { PostResponseDTO = result });
         }
 
+        /// <summary>
+        /// Check Like or Unlike 
+        /// </summary>
+        [HttpGet("check-like-post/{postId}/{userId}")]
+        public async Task<bool> checkLikeOrUnlike (int postId, int userId)
+        {
+            try
+            {
+                var result =  await _postService.CheckIsLikedPost(userId, postId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
     }
 }

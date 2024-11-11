@@ -74,6 +74,43 @@ namespace Services.Implementations
             }
         }
 
+        /*--------- Get All Users-----*/
+        public async Task<ActionResult<IEnumerable<UserValidDTO>>> getAllUser(int userId)
+        {
+            try
+            {
+                var users = await _context.Users.Where(u => u.UserId != userId).ToListAsync();
+                var result = new List<UserValidDTO>();
+                foreach (var user in users)
+                {
+                    var userValidDTO = _mapper.Map<UserValidDTO>(user);
+                    result.Add(userValidDTO);
+                }
+                return result;
+            } catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Get User By UserId
+        public async Task<ActionResult<User>> getUserByUserId(int userId)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /*---------Internal Site---------*/
         // Hash Password
         private String hassPassWord(string password)

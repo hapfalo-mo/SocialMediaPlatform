@@ -14,6 +14,7 @@ namespace Models.DTO
         public string Avatar_Url { get; set; }
         public string Title { get; set; }
         public string Body { get;set; }
+        public string ImgURL { get; set; }
         public DateTime CreateAt { get; set; }
         public int TotalLike { get; set; } = 0;
         public int TotalComment { get; set; } = 0;

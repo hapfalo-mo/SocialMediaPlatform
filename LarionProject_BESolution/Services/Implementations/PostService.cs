@@ -84,5 +84,23 @@ namespace Services.Implementations
                 throw new Exception("An error occurred: " + ex.Message);
             }
         }   
+
+        // Check Like or Not 
+        public async Task<bool> CheckIsLikedPost(int userId, int postId)
+        {
+            try
+            {
+                bool result = false;
+                var like = await _context.Likes.FirstOrDefaultAsync(l => l.UserId == userId && l.PostId == postId);
+                if (like != null)
+                {
+                    result = true;
+                }
+                return result;
+            } catch(Exception er)
+            {
+                throw new Exception(er.Message);
+            }
+        }
     }
 }

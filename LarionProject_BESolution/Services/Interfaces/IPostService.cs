@@ -13,5 +13,6 @@ namespace Services.Interfaces
         Task<IActionResult> CreateNewPost(PostCreateDTO postDTO);
         Task<ActionResult<PostResponseDTO>> GetPostByPostID(int postId);
         Task<ActionResult<IEnumerable<PostResponseDTO>>> GetAllPosts();
+        Task<bool> CheckIsLikedPost(int userId, int postId);
     }
 }
