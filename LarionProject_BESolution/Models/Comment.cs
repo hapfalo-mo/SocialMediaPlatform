@@ -15,7 +15,9 @@ public partial class Comment
 
     public int? ParrentId { get; set; }
 
-    public bool Status { get; set; } = true;
+    public int PostId { get; set; }
+
+    public virtual Post Post { get; set; } = null!;
 
     public virtual User CreateByNavigation { get; set; } = null!;
 

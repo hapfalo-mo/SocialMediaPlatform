@@ -21,6 +21,7 @@ builder.Services.AddScoped<IFollowActionService, FollowActionService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddAutoMapper(typeof(GenerateProfile));
 builder.Services.AddScoped<ILikeActionService, LikeActionService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddCors(OptionsBuilderConfigurationExtensions =>
 {
     OptionsBuilderConfigurationExtensions.AddPolicy("AllowAll", builder =>

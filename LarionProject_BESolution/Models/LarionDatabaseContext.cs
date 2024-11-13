@@ -70,6 +70,9 @@ public partial class LarionDatabaseContext : DbContext
                 .HasForeignKey(d => d.ParrentId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("comments_parrent_id_fkey");
+            entity.HasOne(d => d.Post).WithMany(p => p.Comments)
+                .HasForeignKey(d => d.PostId)
+                .HasConstraintName("comments_post_id_fkey");
         });
 
         modelBuilder.Entity<Favorite>(entity =>
@@ -132,6 +135,11 @@ public partial class LarionDatabaseContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("post_user_id_fkey");
+
+            entity.HasMany(d => d.Comments).WithOne(p => p.Post)
+                .HasForeignKey(d => d.PostId)
+                .HasConstraintName("comments_post_id_fkey");
+
         });
 
         modelBuilder.Entity<User>(entity =>

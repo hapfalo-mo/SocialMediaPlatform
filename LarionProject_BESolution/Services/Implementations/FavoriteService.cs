@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.DTO;
 using Services.Interfaces;
@@ -33,18 +34,66 @@ namespace Services.Implementations
 
         public async Task<IActionResult> AddFavoritebyUser(int userId, List<int> favoriteId)
         {
-            foreach (var item in favoriteId)
+            try
             {
-                var userFavorite = new UserFavorite()
+                foreach (var item in favoriteId)
                 {
-                    UserId = userId,
-                    FavoriteId = item,
-                    CreateAt = DateTime.Now,
-                };
-                _context.UserFavorites.Add(userFavorite);
+                    var userFavorite = new UserFavorite()
+                    {
+                        UserId = userId,
+                        FavoriteId = item,
+                        CreateAt = DateTime.Now,
+                    };
+                    _context.UserFavorites.Add(userFavorite);
+                }
+                await _context.SaveChangesAsync();
+                return new StatusCodeResult(201);
+            } catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
             }
-            await _context.SaveChangesAsync();
-            return new OkObjectResult("Add favorite success");
+        }
+
+        public async Task<ActionResult<IEnumerable<FavoriteAddNewDTO>>> getAllFavoriteUnregistered(int userId)
+        {
+            try
+            {   
+                var resultList = new List<FavoriteAddNewDTO>();
+                var listFavorite = await _context.Favorites.Where(f => f.Status == (Int32)FavoriteEnum.Active && !_context.UserFavorites.Any(uf => uf.FavoriteId == f.FavoriteId && uf.UserId == userId)).ToListAsync();
+                foreach (var item in listFavorite)
+                {
+                    FavoriteAddNewDTO favoriteAddNewDTO = new FavoriteAddNewDTO()
+                    {
+                        favoriteId = item.FavoriteId,
+                        favoriteName = item.FavoriteName
+                    };
+                    resultList.Add(favoriteAddNewDTO);
+                }
+                return resultList;
+            } catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+        }
+
+        public async Task<ActionResult<IEnumerable<Favorite>>> getAllUserFavoriteByUserId (int userId)
+        {
+            try
+            {
+                var listFavorite = await _context.Favorites.Where(f => f.Status == (Int32)FavoriteEnum.Active && _context.UserFavorites.Any(uf => uf.FavoriteId == f.FavoriteId && uf.UserId == userId)).ToListAsync();
+                if (listFavorite == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return listFavorite;
+                }
+
+            } catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

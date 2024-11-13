@@ -50,7 +50,7 @@ namespace Services.Implementations
                 var user = _context.Users.FirstOrDefault(u => u.UserId == postResponse.UserId);
                 var result = _mapper.Map<PostResponseDTO>(postResponse);
                 result.TotalLike = await _context.Likes.CountAsync( l => l.PostId == postId);
-                result.TotalComment = await _context.Comments.CountAsync(c => c.ParrentId == postId);
+                result.TotalComment = await _context.Comments.CountAsync(c => c.PostId == postId);
                 result.FullName = user.FullName;
                 result.Avatar_Url = user.AvatarUrl;
                 return result;
@@ -72,7 +72,7 @@ namespace Services.Implementations
                     var user = _context.Users.FirstOrDefault(u => u.UserId == post.UserId);
                     var postResponse = _mapper.Map<PostResponseDTO>(post);
                     postResponse.TotalLike = await _context.Likes.CountAsync(l => l.PostId == post.PostId);
-                    postResponse.TotalComment = await _context.Comments.CountAsync(c => c.ParrentId == post.PostId);
+                    postResponse.TotalComment = await _context.Comments.CountAsync(c => c.PostId == post.PostId);
                     postResponse.FullName = user.FullName;
                     postResponse.Avatar_Url = user.AvatarUrl;
                     result.Add(postResponse);

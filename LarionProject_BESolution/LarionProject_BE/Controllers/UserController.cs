@@ -63,7 +63,7 @@ namespace LarionProject_BE.Controllers
 
         // Get User By User Id
         [HttpGet("get-user-by-id/{userId}")]
-        public async Task<ActionResult<User>> getUserByUserId(int userId)
+        public async Task<ActionResult<UserResponseDTO>> getUserByUserId(int userId)
         {
             try
             {

@@ -79,7 +79,9 @@ namespace Services.Implementations
         {
             try
             {
-                var users = await _context.Users.Where(u => u.UserId != userId).ToListAsync();
+                var users = await _context.Users.Where(u => u.UserId != userId)
+                    .Except( _context.Users.Where(u => u.UserId == 1))
+                    .ToListAsync();
                 var result = new List<UserValidDTO>();
                 foreach (var user in users)
                 {
@@ -94,7 +96,7 @@ namespace Services.Implementations
         }
 
         // Get User By UserId
-        public async Task<ActionResult<User>> getUserByUserId(int userId)
+        public async Task<ActionResult<UserResponseDTO>> getUserByUserId(int userId)
         {
             try
             {
@@ -103,7 +105,11 @@ namespace Services.Implementations
                 {
                     throw new Exception("User not found");
                 }
-                return user;
+                var userResponseDTO = _mapper.Map<UserResponseDTO>(user);
+                userResponseDTO.FollowedCount = await _context.Follows.CountAsync(f => f.FollowedUserId == userId);
+                userResponseDTO.FollowingCount = await _context.Follows.CountAsync(f => f.FollowingUserId == userId);
+                userResponseDTO.PostCount = await _context.Posts.CountAsync(p => p.UserId == userId);
+                return userResponseDTO;
             }
             catch (Exception ex)
             {

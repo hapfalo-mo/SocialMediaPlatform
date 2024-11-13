@@ -14,6 +14,6 @@ namespace Services.Interfaces
         Task<User> createUser(UserDTO userDTO);
         Task<ActionResult<UserValidDTO>> loginUser(string username, string password);
         Task<ActionResult<IEnumerable<UserValidDTO>>> getAllUser(int userId);
-        Task<ActionResult<User>> getUserByUserId(int userId);
+        Task<ActionResult<UserResponseDTO>> getUserByUserId(int userId);
     }
 }

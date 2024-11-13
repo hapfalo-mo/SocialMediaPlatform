@@ -13,5 +13,6 @@ namespace Models.DTO
         public short role { get; set; } 
         public string AvatarUrl { get; set; }
         public string Username { get;set; }
+        public  int Gentle { get; set; }
     }
 }
