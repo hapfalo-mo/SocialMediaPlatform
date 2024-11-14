@@ -10,9 +10,13 @@ Because this project is built and ran in local environment, so you can read belo
 Or see below main screens of the project
 
 ![Login Screen](https://i.ibb.co/pnP7Lnf/login.png)  
+--
 ![Signup Screen](https://i.ibb.co/dQjnGHR/signup.png)
+--
 ![Welcome Screen](https://i.ibb.co/4dY73fB/welcome.png)
+--
 ![Selection Screen](https://i.ibb.co/HTZ1HZX/selection.png)
+--
 ![Home Screen](https://i.ibb.co/Bc8WM4G/main.png)
 
 ---
