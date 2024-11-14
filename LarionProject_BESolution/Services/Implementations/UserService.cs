@@ -34,12 +34,20 @@ namespace Services.Implementations
             try
             {
                 var user = _mapper.Map<User>(userDTO);
-                if (userDTO.password_hash != userDTO.re_password_hash)
+                // Check duplicate Username 
+                var checkUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == userDTO.Username);
+                if (checkUser != null)
+                {
+                    throw new Exception("Tên tài khoản đã tồn tại");
+                }
+                // Check user password
+                if (userDTO.PasswordHash != userDTO.re_password_hash)
                 {
                     throw new Exception("Mật khẩu không trùng khớp");
                 }
-                user.PasswordHash = hassPassWord(userDTO.password_hash);
-                user.PhoneNumber = userDTO.phone_number;
+                user.PasswordHash = hassPassWord(userDTO.PasswordHash);
+                user.CreatedAt = DateTime.UtcNow;
+                user.AvatarUrl = "https://i.ibb.co/r7Zr6gg/avatar.png";
                 user.Status = 1;
                 user.Role = 1;
                 await _context.Users.AddAsync(user);
@@ -57,14 +65,22 @@ namespace Services.Implementations
         {
             try
             {
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || username.Equals("") || password.Equals(""))
+                {
+                    throw new Exception("Tên tài khoản hoặc mật khẩu không được để trống");
+                }
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
                 if (user == null)
                 {
-                    throw new Exception("User not found");
+                    throw new Exception("Không tìm thấy người dùng");
                 }
-                if (!verifyPassword(password, user.PasswordHash))
+                else if (user.Status == 0)
                 {
-                    throw new Exception("Password is incorrect");
+                    throw new Exception("Hiện tại người dùng đang bị khóa tài khoản");
+                }
+                else if (!verifyPassword(password, user.PasswordHash))
+                {
+                    throw new Exception("Mật khẩu hiện không đúng");
                 }
                 return await generateToken(user.UserId);
             }
@@ -79,17 +95,39 @@ namespace Services.Implementations
         {
             try
             {
-                var users = await _context.Users.Where(u => u.UserId != userId)
-                    .Except( _context.Users.Where(u => u.UserId == 1))
-                    .ToListAsync();
-                var result = new List<UserValidDTO>();
-                foreach (var user in users)
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+                if (user == null)
                 {
-                    var userValidDTO = _mapper.Map<UserValidDTO>(user);
-                    result.Add(userValidDTO);
+                    throw new Exception("User not found");
                 }
-                return result;
-            } catch (Exception ex)
+                var userFavorites = await _context.UserFavorites.Where(uf => uf.UserId == userId).ToListAsync();
+                var uniqueUserId = new HashSet<int>();
+                var users = await _context.Users
+                    .Where(u => u.UserId != userId && u.Role != 0 && u.Status == 1).ToListAsync();
+                var result = new List<UserValidDTO>();
+                foreach (var userFavorite in userFavorites)
+                {
+                    var listUserFavorite = await _context.UserFavorites.Where(uf => uf.FavoriteId == userFavorite.FavoriteId && uf.UserId != userId).ToListAsync();
+                    foreach (var item in listUserFavorite)
+                    {
+                        var userFavoriteId = item.UserId;
+                        if (!uniqueUserId.Contains(userFavoriteId))
+                        {
+                            var userFavoritePerson = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userFavoriteId);
+                            if (userFavoritePerson != null)
+                            {
+                                var userValidDTO = _mapper.Map<UserValidDTO>(userFavoritePerson);
+                                result.Add(userValidDTO);
+                                uniqueUserId.Add(userFavoriteId);
+                            }
+                        }
+                    }
+                }
+                var random = new Random();
+                var randomUsers = result.OrderBy(x => random.Next()).Take(6).ToList();
+                return randomUsers;
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -117,6 +155,27 @@ namespace Services.Implementations
             }
         }
 
+        // Check User Create Favorite 
+        public async Task<bool> checkUserHaveFavorite (int userId)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+                if (user == null)
+                {
+                    throw new Exception("Không tìm thấy người dùng");
+                } 
+                var favorite = await _context.UserFavorites.FirstOrDefaultAsync(u => u.UserId == userId);
+                if (favorite == null)
+                {
+                    return false;
+                }
+                return true;
+            } catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         /*---------Internal Site---------*/
         // Hash Password
         private String hassPassWord(string password)

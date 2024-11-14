@@ -15,5 +15,6 @@ namespace Services.Interfaces
         Task<ActionResult<UserValidDTO>> loginUser(string username, string password);
         Task<ActionResult<IEnumerable<UserValidDTO>>> getAllUser(int userId);
         Task<ActionResult<UserResponseDTO>> getUserByUserId(int userId);
+        Task<bool> checkUserHaveFavorite(int userId);
     }
 }

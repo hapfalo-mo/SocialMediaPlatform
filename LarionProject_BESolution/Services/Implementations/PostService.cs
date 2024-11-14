@@ -22,8 +22,6 @@ namespace Services.Implementations
         {
         }
 
-        /*---------Code Site---------*/
-
         // Add New Post
         public async Task<IActionResult> CreateNewPost(PostCreateDTO postDTO)
         {
@@ -75,6 +73,7 @@ namespace Services.Implementations
                     postResponse.TotalComment = await _context.Comments.CountAsync(c => c.PostId == post.PostId);
                     postResponse.FullName = user.FullName;
                     postResponse.Avatar_Url = user.AvatarUrl;
+                    postResponse.Username = user.Username;
                     result.Add(postResponse);
                 }
                 return result;

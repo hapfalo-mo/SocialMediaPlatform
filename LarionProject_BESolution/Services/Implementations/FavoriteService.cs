@@ -24,8 +24,8 @@ namespace Services.Implementations
         public async Task<IActionResult> CreateNewFavorite(FavoriteCreateDTO favoriteCreateDTO)
         {
             var favorite = _mapper.Map<Favorite>(favoriteCreateDTO);
-            favorite.CreateAt =DateTime.Now;
-            favorite.Status = (Int32) FavoriteEnum.Active;
+            favorite.CreateAt = DateTime.Now;
+            favorite.Status = (Int32)FavoriteEnum.Active;
             favorite.CreateBy = favoriteCreateDTO.CreateBy;
             _context.Favorites.Add(favorite);
             await _context.SaveChangesAsync();
@@ -48,7 +48,8 @@ namespace Services.Implementations
                 }
                 await _context.SaveChangesAsync();
                 return new StatusCodeResult(201);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new BadRequestObjectResult(ex.Message);
             }
@@ -57,7 +58,7 @@ namespace Services.Implementations
         public async Task<ActionResult<IEnumerable<FavoriteAddNewDTO>>> getAllFavoriteUnregistered(int userId)
         {
             try
-            {   
+            {
                 var resultList = new List<FavoriteAddNewDTO>();
                 var listFavorite = await _context.Favorites.Where(f => f.Status == (Int32)FavoriteEnum.Active && !_context.UserFavorites.Any(uf => uf.FavoriteId == f.FavoriteId && uf.UserId == userId)).ToListAsync();
                 foreach (var item in listFavorite)
@@ -70,13 +71,14 @@ namespace Services.Implementations
                     resultList.Add(favoriteAddNewDTO);
                 }
                 return resultList;
-            } catch (Exception err)
+            }
+            catch (Exception err)
             {
                 throw new Exception(err.Message);
             }
         }
 
-        public async Task<ActionResult<IEnumerable<Favorite>>> getAllUserFavoriteByUserId (int userId)
+        public async Task<ActionResult<IEnumerable<Favorite>>> getAllUserFavoriteByUserId(int userId)
         {
             try
             {
@@ -90,7 +92,28 @@ namespace Services.Implementations
                     return listFavorite;
                 }
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ActionResult<IEnumerable<Favorite>>> getAllFavorite()
+        {
+            try
+            {
+                var listFavorite = await _context.Favorites.Where(f => f.Status == (Int32)FavoriteEnum.Active).ToListAsync();
+                if (listFavorite == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return listFavorite;
+                }
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

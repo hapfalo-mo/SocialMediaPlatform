@@ -60,5 +60,20 @@ namespace LarionProject_BE.Controllers
             }
         }
 
+        // Get All Favorite List 
+        [HttpGet("get-all-favorite")]
+        public async Task<ActionResult<IEnumerable<Favorite>>> getAllFavorite()
+        {
+            try
+            {
+                var favorites = await _favoriteService.getAllFavorite();
+                return Ok(favorites);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

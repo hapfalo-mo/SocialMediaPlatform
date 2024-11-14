@@ -15,5 +15,6 @@ namespace Services.Interfaces
         Task<ActionResult<IEnumerable<FavoriteAddNewDTO>>> getAllFavoriteUnregistered(int userId);
         Task<IActionResult> AddFavoritebyUser(int userId, List<int> favoriteId);
         Task<ActionResult<IEnumerable<Favorite>>> getAllUserFavoriteByUserId(int userId);
+        Task<ActionResult<IEnumerable<Favorite>>> getAllFavorite();
     }
 }

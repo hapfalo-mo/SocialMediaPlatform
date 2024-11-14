@@ -75,5 +75,20 @@ namespace LarionProject_BE.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // Get User Have Favorite
+        [HttpGet("check-user-have-favorite/{userId}")]
+        public async Task<bool> checkUserHaveFavorite(int userId)
+        {
+            try
+            {
+                var result = await _userService.checkUserHaveFavorite(userId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
